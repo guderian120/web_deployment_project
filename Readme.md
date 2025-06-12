@@ -9,6 +9,12 @@ This project implements a **secure**, **scalable**, and **high-performance** clo
 
 ---
 
+## 🔗 Live Deployment
+
+The application is currently deployed and accessible at:  
+[![Live Demo](https://img.shields.io/badge/-Live%20Demo-blue?style=for-the-badge)](https://d2yjm0oiyxkgds.cloudfront.net/)
+
+
 ## **Architecture Diagram**  
 ```mermaid
 graph TD
