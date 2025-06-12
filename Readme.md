@@ -17,7 +17,7 @@ graph TD
     B -->|API Calls| D[API Gateway]
     D -->|Lambda Proxy| E[Lambda Functions]
     C -->|API Calls| D
-    F[AWS WAF] --> B
+    F[AWS WAF] --> B[CloudFront CDN]
     F --> D
 ```
 
@@ -29,15 +29,15 @@ graph TD
 - **Purpose**: Hosts the web application  
 - **Tech Stack**:  
   - NGINX/Apache for static file serving  
-  - React/Angular/Vue for dynamic content  
+  - HTML/AXIOS
 - **Features**:  
-  - Auto-scaling group for high availability  
-  - Deployed in multiple AZs  
+  - CDN for low latency
+  - WAF for enhanced web security  
 
 ### **2. Content Delivery (CloudFront)**  
 - **Purpose**: Accelerates content delivery globally  
 - **Configuration**:  
-  - Origin: EC2 Load Balancer (for dynamic content) + S3 (for static assets)  
+  - Origin: EC2 instance (for dynamic content)
   - Caching policies optimized for web apps  
   - HTTPS enforced (TLS 1.2+)  
 
@@ -45,9 +45,9 @@ graph TD
 - **Purpose**: Serverless API for business logic  
 - **Tech Stack**:  
   - API Gateway (REST/HTTP)  
-  - Lambda (Node.js/Python/Java)  
+  - Lambda (Python) 
 - **Features**:  
-  - JWT/OAuth authentication  
+  - Block Malicious Ips  
   - Rate limiting via Usage Plans  
 
 ### **4. Security (AWS WAF)**  
@@ -72,7 +72,7 @@ sudo systemctl enable nginx
 ```
 
 ### **2. CloudFront Configuration**  
-- **Origin**: EC2 Load Balancer DNS or S3 bucket  
+- **Origin**: EC2 Instance DNS 
 - **Behaviors**:  
   - Cache static assets (`/static/*`)  
   - Forward API requests (`/api/*`) to API Gateway  
@@ -90,7 +90,7 @@ sam deploy --guided
 ```hcl
 resource "aws_wafv2_web_acl" "main" {
   name        = "rate-limiting-acl"
-  scope       = "REGIONAL" # Or CLOUDFRONT
+  scope       = "CLOUDFRONT" 
   default_action { allow {} }
   rule {
     name     = "RateLimitRule"
@@ -98,7 +98,7 @@ resource "aws_wafv2_web_acl" "main" {
     action { block {} }
     statement {
       rate_based_statement {
-        limit              = 100
+        limit              = 10
         aggregate_key_type = "IP"
       }
     }
@@ -130,7 +130,7 @@ hey -n 50 -c 5 https://your-api-gateway-url/api/endpoint
 ---
 
 ## **Cost Optimization**  
-- **EC2**: Use Spot Instances for non-critical workloads  
+- **EC2**: Usage of ondemand 
 - **Lambda**: Right-size memory/timeout settings  
 - **CloudFront**: Leverage cache hit ratios to reduce origin calls  
 
@@ -152,5 +152,4 @@ hey -n 50 -c 5 https://your-api-gateway-url/api/endpoint
 
 ---
 
-**📌 Maintained by**: [Your Team Name]  
 **🔗 Reference**: [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
