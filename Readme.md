@@ -113,7 +113,7 @@ resource "aws_wafv2_web_acl" "main" {
 ```bash
 # Test with 20 rapid requests
 for i in {1..20}; do 
-  curl -s -o /dev/null -w "Request $i: HTTP %{http_code}\n" https://your-cloudfront-url/
+  curl -s -o /dev/null -w "Request $i: HTTP %{http_code}\n" https://cloudfront-url/
 done
 ```
 **Expected Result**: Requests blocked (HTTP 403) after 10 requests/minute.  
@@ -124,7 +124,7 @@ done
 go install github.com/rakyll/hey@latest
 
 # Run test (50 requests, 5 concurrent)
-hey -n 50 -c 5 https://your-api-gateway-url/api/endpoint
+hey -n 50 -c 5 https://api-gateway-url/api/endpoint
 ```
 
 ---
