@@ -12,7 +12,7 @@ This project implements a **secure**, **scalable**, and **high-performance** clo
 ## **Architecture Diagram**  
 ```mermaid
 graph TD
-    A[User] -->|HTTPS| B[CloudFront CDN]
+    A[User] -->|HTTPS| F[AWS WAF]
     B -->|Static Assets| C[EC2 Frontend]
     B -->|API Calls| D[API Gateway]
     D -->|Lambda Proxy| E[Lambda Functions]
